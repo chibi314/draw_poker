@@ -11,11 +11,9 @@ class Deck
  private:
   static constexpr int NUM_OF_CARDS = PlayingCard::NUM_OF_SUITS * PlayingCard::NUM_OF_NUMBERS;
   std::vector<PlayingCard> m_playing_cards;
-  std::random_device m_dev;
-  std::mt19937 m_rng;
 
  public:
-  Deck() : m_playing_cards(), m_dev(), m_rng(m_dev()) { reset(); }
+  Deck() : m_playing_cards() { reset(); }
 
   void reset()
   {
@@ -43,6 +41,11 @@ class Deck
     }
   }
 
+  PlayingCard pickParticularCard(const PlayingCard& playing_card)
+  {
+    return pickParticularCard(playing_card.getSuit(), playing_card.getNumber());
+  }
+
   PlayingCard pickParticularCard(const PlayingCard::Suit suit, const int number)
   {
     if (m_playing_cards.empty())
@@ -64,8 +67,24 @@ class Deck
         return card;
       }
     }
-
     throw std::runtime_error("invalid card was specified");
+  }
+
+  PlayingCard pickCardByIndex(const int index)
+  {
+    if (m_playing_cards.empty())
+    {
+      throw std::runtime_error("deck is empty");
+    }
+    if (!(0 <= index && index < getDeckSize()))
+    {
+      throw std::runtime_error("index out of range");
+    }
+
+    PlayingCard card = m_playing_cards.at(index);
+    m_playing_cards.erase(m_playing_cards.begin(),
+                          m_playing_cards.begin() + index + 1);  // erase cards from 0 to index
+    return card;
   }
 
   PlayingCard pickRandomCard()
@@ -75,14 +94,18 @@ class Deck
       throw std::runtime_error("deck is empty");
     }
 
+    std::random_device dev;
+    std::mt19937 rng(dev());
     std::uniform_int_distribution<std::mt19937::result_type> dist(0, m_playing_cards.size() - 1);
 
-    const int index = dist(m_rng);
+    const int index = dist(rng);
     auto itr = m_playing_cards.begin() + index;
     PlayingCard card = *itr;
     m_playing_cards.erase(itr);
     return card;
   }
 
+  int getDeckSize() const { return m_playing_cards.size(); }
+    
   std::vector<PlayingCard> getDeck() const { return m_playing_cards; }
 };

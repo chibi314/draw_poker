@@ -1,10 +1,13 @@
-#include <iostream>
 #include <array>
+#include <iostream>
 
-#include "playing_card.hpp"
+#include "ddbp_game.hpp"
 #include "deck.hpp"
 #include "hand.hpp"
+#include "playing_card.hpp"
+#include "solver.hpp"
 
+#if 0
 int main()
 {
   Deck deck;
@@ -32,5 +35,13 @@ int main()
   std::cout << Hand::convertHandTypeToString(Hand::getHand(player_hand, number1, number2))
             << std::endl;
   std::cout << number1 << " " << number2 << std::endl;
+  return 0;
+}
+
+#endif
+
+int main()
+{
+  Solver::run();
   return 0;
 }

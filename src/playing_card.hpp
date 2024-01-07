@@ -40,20 +40,20 @@ class PlayingCard
     switch (getSuit())
     {
       case PlayingCard::Suit::SPADE:
-        std::cout << "S";
+        std::cout << "\033[30m S\033[0m";
         break;
       case PlayingCard::Suit::CLUB:
-        std::cout << "C";
+        std::cout << "\033[32m C\033[0m";
         break;
       case PlayingCard::Suit::HEART:
-        std::cout << "H";
+        std::cout << "\033[31m H\033[0m";
         break;
       case PlayingCard::Suit::DIAMOND:
-        std::cout << "D";
+        std::cout << "\033[36m D\033[0m";
         break;
     }
 
-    std::cout << getNumber() << std::endl;
+    std::cout << getNumber();
   }
 
   bool operator<(const PlayingCard& card) const
@@ -68,3 +68,5 @@ class PlayingCard
     }
   }
 };
+
+using PlayerHand = std::array<PlayingCard, 5>;
