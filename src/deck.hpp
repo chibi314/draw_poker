@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <random>
 #include <vector>
 
 #include "playing_card.hpp"
@@ -10,9 +11,11 @@ class Deck
  private:
   static constexpr int NUM_OF_CARDS = PlayingCard::NUM_OF_SUITS * PlayingCard::NUM_OF_NUMBERS;
   std::vector<PlayingCard> m_playing_cards;
+  std::random_device m_dev;
+  std::mt19937 m_rng;
 
  public:
-  Deck() { reset(); }
+  Deck() : m_playing_cards(), m_dev(), m_rng(m_dev()) { reset(); }
 
   void reset()
   {
@@ -42,6 +45,11 @@ class Deck
 
   PlayingCard pickParticularCard(const PlayingCard::Suit suit, const int number)
   {
+    if (m_playing_cards.empty())
+    {
+      throw std::runtime_error("deck is empty");
+    }
+
     if (!(PlayingCard::MIN_NUMBER <= number && number <= PlayingCard::MAX_NUMBER))
     {
       throw std::runtime_error("invalid number of PlayingCards");
@@ -58,6 +66,22 @@ class Deck
     }
 
     throw std::runtime_error("invalid card was specified");
+  }
+
+  PlayingCard pickRandomCard()
+  {
+    if (m_playing_cards.empty())
+    {
+      throw std::runtime_error("deck is empty");
+    }
+
+    std::uniform_int_distribution<std::mt19937::result_type> dist(0, m_playing_cards.size() - 1);
+
+    const int index = dist(m_rng);
+    auto itr = m_playing_cards.begin() + index;
+    PlayingCard card = *itr;
+    m_playing_cards.erase(itr);
+    return card;
   }
 
   std::vector<PlayingCard> getDeck() const { return m_playing_cards; }

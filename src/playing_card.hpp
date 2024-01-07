@@ -7,10 +7,10 @@ class PlayingCard
  public:
   enum class Suit
   {
-    SPADE,
-    CLUB,
-    HEART,
-    DIAMOND
+    SPADE = 1,
+    CLUB = 2,
+    HEART = 3,
+    DIAMOND = 4,
   };
 
   static constexpr int NUM_OF_SUITS = 4;
@@ -54,5 +54,17 @@ class PlayingCard
     }
 
     std::cout << getNumber() << std::endl;
+  }
+
+  bool operator<(const PlayingCard& card) const
+  {
+    if (getNumber() != card.getNumber())
+    {
+      return getNumber() < card.getNumber();
+    }
+    else
+    {
+      return static_cast<int>(getSuit()) < static_cast<int>(card.getSuit());
+    }
   }
 };
