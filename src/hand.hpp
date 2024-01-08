@@ -101,7 +101,7 @@ class Hand
     }
     else if (diff1 == 0)
     {
-        number1 = player_hand_sorted.at(0).getNumber();
+      number1 = player_hand_sorted.at(0).getNumber();
       return HandType::ONE_PAIR;
     }
     else if (diff2 == 0)
@@ -125,7 +125,7 @@ class Hand
     }
   }
 
-    static HandType getHand(const std::array<PlayingCard, 5>& player_hand, int& number1, int& number2)
+  static HandType getHand(const std::array<PlayingCard, 5>& player_hand, int& number1, int& number2)
   {
     auto player_hand_sorted = player_hand;
     std::sort(player_hand_sorted.begin(), player_hand_sorted.end());
@@ -190,7 +190,7 @@ class Hand
         return "One Pair";
       case HandType::HIGH_CARD:
         return "High Card";
-    default:
+      default:
         return "Unknown";
     }
   }

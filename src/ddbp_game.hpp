@@ -4,8 +4,8 @@
 #include <memory>
 
 #include "deck.hpp"
-#include "playing_card.hpp"
 #include "hand.hpp"
+#include "playing_card.hpp"
 
 // Double Double Bonus Poker
 class DDBPGame
@@ -72,7 +72,8 @@ class DDBPGame
     }
   }
 
-  static int convertHandToPoint(const Hand::HandType hand_type, const int number1, const int number2)
+  static int convertHandToPoint(const Hand::HandType hand_type, const int number1,
+                                const int number2)
   {
     switch (hand_type)
     {

@@ -122,8 +122,8 @@ class Solver
       }
     }
 
-    //std::cout << "Best" << std::endl;
-    //printResult(best_ev, best_hold_flag);
+    // std::cout << "Best" << std::endl;
+    // printResult(best_ev, best_hold_flag);
     return best_ev;
   }
 
@@ -172,7 +172,8 @@ class Solver
         auto deck_copy = deck;
         auto player_hand_copy = player_hand;
         player_hand_copy.at(depth) = deck_copy.pickCardByIndexAndEraseFromBeginToIndex(i);
-        ev_sum += calcSumEvRecursive(depth - 1, player_hand_copy, deck_copy, count_total, first_card_index);
+        ev_sum += calcSumEvRecursive(depth - 1, player_hand_copy, deck_copy, count_total,
+                                     first_card_index);
       }
       return ev_sum;
     }

@@ -1,6 +1,6 @@
 #include <array>
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 
 #include "ddbp_game.hpp"
 #include "deck.hpp"
@@ -20,12 +20,12 @@ int main()
 
   // Solver::calcOneHandBestEv(player_hand);
 
-    double sum_sum_ev = 0.0;
-    int sum_count_total = 0;
+  double sum_sum_ev = 0.0;
+  int sum_count_total = 0;
 
   for (int index = 47; index >= 0; --index)
   {
-      std::cout << "index: " << index << std::endl;
+    std::cout << "index: " << index << std::endl;
     int count_total = 0;
     double sum_ev = 0.0;
     Solver::calcEvWithFirstCardIndex(index, count_total, sum_ev);
