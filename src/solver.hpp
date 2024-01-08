@@ -33,11 +33,6 @@ class Solver
   {
     if (depth == -1)
     {
-      // for (const auto& h : player_hand)
-      // {
-      //   h.print();
-      // }
-      // std::cout << std::endl;
       ++count_total;
       return calcPoint(player_hand);
     }
@@ -56,7 +51,7 @@ class Solver
         {
           auto deck_copy = deck;
           auto player_hand_copy = player_hand;
-          player_hand_copy.at(depth) = deck_copy.pickCardByIndex(i);
+          player_hand_copy.at(depth) = deck_copy.pickCardByIndexAndEraseFromBeginToIndex(i);
           point_sum +=
               calcPointSumRecursive(depth - 1, player_hand_copy, hold_flag, deck_copy, count_total);
         }
@@ -73,7 +68,27 @@ class Solver
     return static_cast<double>(point_sum) / count_total;
   }
 
-  static void searchBestAction(const PlayerHand player_hand, const Deck deck)
+  static void printResult(const double ev, const std::array<bool, 5> hold_flag)
+  {
+    std::cout << "EV: " << ev << std::endl;
+    std::cout << "Action: " << std::boolalpha;
+    for (int i = 0; i < 5; ++i)
+    {
+      std::cout << hold_flag.at(i) << " ";
+    }
+    std::cout << std::noboolalpha << std::endl;
+  }
+
+  static void printPlayerHand(const PlayerHand& player_hand)
+  {
+    for (const auto& card : player_hand)
+    {
+      card.print();
+    }
+    std::cout << std::endl;
+  }
+
+  static double searchBestAction(const PlayerHand& player_hand, const Deck& deck)
   {
     double best_ev = 0;
     std::array<bool, 5> best_hold_flag;
@@ -100,43 +115,83 @@ class Solver
                 best_ev = ev;
                 best_hold_flag = hold_flag;
               }
-
-              std::cout << "EV: " << ev << std::endl;
-              std::cout << "Action: " << std::boolalpha;
-              for (int i = 0; i < 5; ++i)
-              {
-                std::cout << hold_flag.at(i) << " ";
-              }
-              std::cout << std::noboolalpha << std::endl;
+              // printResult(ev, hold_flag);
             }
           }
         }
       }
     }
-    std::cout << "Best EV " << best_ev << std::endl;
-    std::cout << "Best hold " << std::boolalpha;
-    for (int i = 0; i < 5; ++i)
-    {
-      std::cout << best_hold_flag.at(i) << " ";
-    }
-    std::cout << std::noboolalpha << std::endl;
+
+    //std::cout << "Best" << std::endl;
+    //printResult(best_ev, best_hold_flag);
+    return best_ev;
   }
 
-  static void run()
+  static double calcOneHandBestEv(const PlayerHand& player_hand)
   {
     Deck deck;
-    const PlayerHand player_hand = {{
-        PlayingCard(PlayingCard::Suit::SPADE, 10),
-        PlayingCard(PlayingCard::Suit::HEART, 9),
-        PlayingCard(PlayingCard::Suit::CLUB, 2),
-        PlayingCard(PlayingCard::Suit::SPADE, 14),
-        PlayingCard(PlayingCard::Suit::SPADE, 4),
-    }};
     for (const auto& card : player_hand)
     {
       deck.pickParticularCard(card);
     }
 
-    searchBestAction(player_hand, deck);
+    // std::cout << "Hand" << std::endl;
+    // printPlayerHand(player_hand);
+
+    return searchBestAction(player_hand, deck);
+  }
+
+  static void printProgress(const int& count_total, const int& first_card_index)
+  {
+    const int num_of_deck = 52 - first_card_index - 1;
+    const int num_total_pattern =
+        num_of_deck * (num_of_deck - 1) * (num_of_deck - 2) * (num_of_deck - 3) / 24;
+    std::cout << "Progress: " << count_total << "/" << num_total_pattern << std::endl;
+  }
+
+  static double calcSumEvRecursive(const int& depth, const PlayerHand& player_hand,
+                                   const Deck& deck, int& count_total, const int& first_card_index)
+  {
+    if (depth == -1)
+    {
+      ++count_total;
+
+      if ((count_total & 63) == 0)
+      {
+        printProgress(count_total, first_card_index);
+      }
+
+      return calcOneHandBestEv(player_hand);
+    }
+    else
+    {
+      double ev_sum = 0.0;
+      const int deck_size = deck.getDeckSize();
+      for (int i = 0; i < deck_size; ++i)
+      {
+        auto deck_copy = deck;
+        auto player_hand_copy = player_hand;
+        player_hand_copy.at(depth) = deck_copy.pickCardByIndexAndEraseFromBeginToIndex(i);
+        ev_sum += calcSumEvRecursive(depth - 1, player_hand_copy, deck_copy, count_total, first_card_index);
+      }
+      return ev_sum;
+    }
+  }
+
+  static void calcEvWithFirstCardIndex(const int index, int& count_total, double& sum_ev)
+  {
+    Deck deck;
+    const PlayingCard tmp_card(PlayingCard::Suit::SPADE, 2);
+    // pick just one card from deck
+    PlayerHand player_hand = {{
+        tmp_card,
+        tmp_card,
+        tmp_card,
+        tmp_card,
+        deck.pickCardByIndexAndEraseFromBeginToIndex(index),
+    }};
+
+    count_total = 0;
+    sum_ev = calcSumEvRecursive(3, player_hand, deck, count_total, index);
   }
 };

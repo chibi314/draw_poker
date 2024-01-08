@@ -70,7 +70,7 @@ class Deck
     throw std::runtime_error("invalid card was specified");
   }
 
-  PlayingCard pickCardByIndex(const int index)
+  PlayingCard pickCardByIndexAndEraseFromBeginToIndex(const int index)
   {
     if (m_playing_cards.empty())
     {
@@ -106,6 +106,6 @@ class Deck
   }
 
   int getDeckSize() const { return m_playing_cards.size(); }
-    
+
   std::vector<PlayingCard> getDeck() const { return m_playing_cards; }
 };

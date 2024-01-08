@@ -1,5 +1,6 @@
 #include <array>
 #include <iostream>
+#include <iomanip>
 
 #include "ddbp_game.hpp"
 #include "deck.hpp"
@@ -7,41 +8,34 @@
 #include "playing_card.hpp"
 #include "solver.hpp"
 
-#if 0
 int main()
 {
-  Deck deck;
-  auto card1 = deck.pickParticularCard(PlayingCard::Suit::SPADE, 10);
-  auto card2 = deck.pickParticularCard(PlayingCard::Suit::HEART, 14);
-  auto card3 = deck.pickParticularCard(PlayingCard::Suit::CLUB, 10);
-  auto card4 = deck.pickParticularCard(PlayingCard::Suit::DIAMOND, 14);
-  auto card5 = deck.pickParticularCard(PlayingCard::Suit::HEART, 10);
+  // const PlayerHand player_hand = {{
+  //     PlayingCard(PlayingCard::Suit::DIAMOND, 10),
+  //     PlayingCard(PlayingCard::Suit::SPADE, 6),
+  //     PlayingCard(PlayingCard::Suit::HEART, 8),
+  //     PlayingCard(PlayingCard::Suit::SPADE, 9),
+  //     PlayingCard(PlayingCard::Suit::CLUB, 10),
+  // }};
 
-  // auto card1 = deck.pickRandomCard();
-  // auto card2 = deck.pickRandomCard();
-  // auto card3 = deck.pickRandomCard();
-  // auto card4 = deck.pickRandomCard();
-  // auto card5 = deck.pickRandomCard();
+  // Solver::calcOneHandBestEv(player_hand);
 
-  std::array<PlayingCard, 5> player_hand = {{card1, card2, card3, card4, card5}};
-  std::cout << "Hand" << std::endl;
-  for (const auto& card : player_hand)
+    double sum_sum_ev = 0.0;
+    int sum_count_total = 0;
+
+  for (int index = 47; index >= 0; --index)
   {
-    card.print();
+      std::cout << "index: " << index << std::endl;
+    int count_total = 0;
+    double sum_ev = 0.0;
+    Solver::calcEvWithFirstCardIndex(index, count_total, sum_ev);
+    std::cout << "count_total: " << count_total << std::endl;
+    std::cout << "sum_ev: " << std::setprecision(100) << sum_ev << std::endl;
+
+    sum_sum_ev += sum_ev;
+    sum_count_total += count_total;
   }
-  std::cout << std::endl;
 
-  int number1, number2;
-  std::cout << Hand::convertHandTypeToString(Hand::getHand(player_hand, number1, number2))
-            << std::endl;
-  std::cout << number1 << " " << number2 << std::endl;
-  return 0;
-}
-
-#endif
-
-int main()
-{
-  Solver::run();
+  std::cout << "averaged EV: " << sum_sum_ev / sum_count_total << std::endl;
   return 0;
 }
