@@ -146,7 +146,8 @@ class Solver
     const int num_of_deck = 52 - first_card_index - 1;
     const int num_total_pattern =
         num_of_deck * (num_of_deck - 1) * (num_of_deck - 2) * (num_of_deck - 3) / 24;
-    std::cout << "Progress: " << count_total << "/" << num_total_pattern << std::endl;
+    std::cout << "Progress: " << count_total << "/" << num_total_pattern << " (" << first_card_index
+              << ")" << std::endl;
   }
 
   static double calcSumEvRecursive(const int& depth, const PlayerHand& player_hand,

@@ -1,3 +1,4 @@
+#include <omp.h>
 #include <array>
 #include <iomanip>
 #include <iostream>
@@ -10,19 +11,10 @@
 
 int main()
 {
-  // const PlayerHand player_hand = {{
-  //     PlayingCard(PlayingCard::Suit::DIAMOND, 10),
-  //     PlayingCard(PlayingCard::Suit::SPADE, 6),
-  //     PlayingCard(PlayingCard::Suit::HEART, 8),
-  //     PlayingCard(PlayingCard::Suit::SPADE, 9),
-  //     PlayingCard(PlayingCard::Suit::CLUB, 10),
-  // }};
-
-  // Solver::calcOneHandBestEv(player_hand);
-
   double sum_sum_ev = 0.0;
   int sum_count_total = 0;
 
+#pragma omp parallel for
   for (int index = 47; index >= 0; --index)
   {
     std::cout << "index: " << index << std::endl;
@@ -32,7 +24,9 @@ int main()
     std::cout << "count_total: " << count_total << std::endl;
     std::cout << "sum_ev: " << std::setprecision(100) << sum_ev << std::endl;
 
+#pragma omp atomic
     sum_sum_ev += sum_ev;
+#pragma omp atomic
     sum_count_total += count_total;
   }
 
